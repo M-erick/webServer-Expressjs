@@ -11,7 +11,8 @@ const books = [
     { id: 4, title: "Advanced OOP Concepts", author: "Lynet" },
 ];
 
-
+// Add body parsing middleware
+app.use(express.json());
 
 // url :http://localhost:3000/api/books
 // GET all books
@@ -39,9 +40,7 @@ app.post('/api/books', (req, res) => {
         author: req.body.author,
     };
 
-    if (!newBook.title || !newBook.author) {
-        return res.status(400).send('Title and author are required'); // Handle missing data
-    }
+   
 
     books.push(newBook);
     res.send(newBook);
@@ -63,9 +62,25 @@ app.delete('/api/books/:id', (req, res) => {
 
 app.put('/api/books/:id', (req, res) => {
     const bookId = parseInt(req.params.id);
-    const  bookIndex = books.findIndex(book=> book.id ===bookId);
+    const bookIndex = books.findIndex(book => book.id === bookId);
 
-    res.send('PUT method not yet implemented'); 
+    // if the given id not found return error
+    if (bookIndex === -1) {
+        return res.status(404).send('Book not found');
+    }
+
+    const { title, author } = req.body; 
+
+    // Update book properties if provided in request body
+    if (title) {
+        books[bookIndex].title = title;
+    }
+    if (author) {
+        books[bookIndex].author = author;
+    }
+
+    res.send(books[bookIndex]); 
 });
+
 
 app.listen(3000, () => console.log('Server listening on port 3000'));
