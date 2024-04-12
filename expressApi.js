@@ -79,6 +79,7 @@ app.put('/api/books/:id', (req, res) => {
         books[bookIndex].author = author;
     }
 
+    // return the updated record
     res.send(books[bookIndex]); 
 });
 
